@@ -30,7 +30,7 @@ class Variable:
         add_func(self.creator)
         while funcs:
             generation, f = heapq.heappop(funcs)
-            gys = [output.grad() for output in f.outputs]
+            gys = [output().grad for output in f.outputs]
             gxs = f.backward(*gys)
             if not isinstance(gxs, tuple):
                 gxs = (gxs,)
@@ -126,3 +126,4 @@ def as_array(x):
 for i in range(10):
     x = Variable(np.random.randn(10000))
     y = square(square(square(x)))
+    print(y)
