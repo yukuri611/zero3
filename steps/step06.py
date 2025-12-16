@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Variable:
     def __init__(self, data):
         self.data = data
@@ -18,8 +19,8 @@ class Function:
 
     def backward(self, gy):
         raise NotImplementedError()
-    
-  
+
+
 class Square(Function):
     def forward(self, x):
         y = x ** 2
@@ -29,7 +30,7 @@ class Square(Function):
         gx = 2 * x * gy
         return gx
 
-    
+
 class Exp(Function):
     def forward(self, x):
         return np.exp(x)
@@ -38,7 +39,7 @@ class Exp(Function):
         gx = np.exp(x) * gy
         return gx
 
-  
+
 def numerical_diff(f, x, eps=1e-4):
         x0 = Variable(x.data - eps)
         x1 = Variable(x.data + eps)

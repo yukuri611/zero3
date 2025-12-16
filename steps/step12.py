@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Variable:
     def __init__(self, data):
         if data is not None:
@@ -8,10 +9,10 @@ class Variable:
         self.data = data
         self.grad = None
         self.creator = None
-    
+
     def set_creator(self, func):
         self.creator = func
-    
+
     def backward(self):
         if self.grad is None:
             self.grad = np.ones_like(self.data)
@@ -43,13 +44,13 @@ class Function:
 
     def backward(self, gys):
         raise NotImplementedError()
-    
+
 class Add(Function) :
     def forward(self, x0, x1):
         y = x0 + x1
         return y
-    
-  
+
+
 class Square(Function):
     def forward(self, x):
         y = x ** 2
@@ -59,7 +60,7 @@ class Square(Function):
         gx = 2 * x * gy
         return gx
 
-    
+
 class Exp(Function):
     def forward(self, x):
         return np.exp(x)
@@ -68,7 +69,7 @@ class Exp(Function):
         gx = np.exp(x) * gy
         return gx
 
-  
+
 def numerical_diff(f, x, eps=1e-4):
         x0 = Variable(x.data - eps)
         x1 = Variable(x.data + eps)

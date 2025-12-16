@@ -1,7 +1,9 @@
-import numpy as np
+import contextlib
 import heapq
 import weakref
-import contextlib
+
+import numpy as np
+
 
 class Variable:
     def __init__(self, data, name=None):
@@ -13,11 +15,11 @@ class Variable:
         self.grad = None
         self.creator = None
         self.generation = 0
-    
+
     def set_creator(self, func):
         self.creator = func
         self.generation = func.generation + 1
-    
+
     def backward(self, retain_grad=False):
         if self.grad is None:
             self.grad = np.ones_like(self.data)
@@ -36,7 +38,7 @@ class Variable:
             gxs = f.backward(*gys)
             if not isinstance(gxs, tuple):
                 gxs = (gxs,)
-            
+
             for x, gx in zip(f.inputs, gxs):
                 if x.grad is None:
                     x.grad= gx
@@ -47,18 +49,18 @@ class Variable:
             if not retain_grad:
                 for y in f.outputs:
                     y().grad = None
-    
+
     def cleargrad(self):
         self.grad = None
-    
+
     @property
     def shape(self):
         return self.data.shape
-    
+
     @property
     def size(self):
         return self.data.size
-    
+
     @property
     def dtype(self):
         return self.data.dtype
@@ -122,7 +124,7 @@ def no_grad():
     return using_config('enable_backprop', False)
 
 
-    
+
 class Add(Function) :
     def forward(self, x0, x1):
         y = x0 + x1
@@ -138,8 +140,8 @@ class Mul(Function):
     def backward(self, gy):
         x0, x1 = self.inputs[0].data, self.inputs[1].data
         return gy * x1, gy * x0
-    
-  
+
+
 class Square(Function):
     def forward(self, x):
         y = x ** 2
@@ -149,7 +151,7 @@ class Square(Function):
         gx = 2 * x * gy
         return gx
 
-    
+
 class Exp(Function):
     def forward(self, x):
         return np.exp(x)
@@ -158,7 +160,7 @@ class Exp(Function):
         gx = np.exp(x) * gy
         return gx
 
-  
+
 def numerical_diff(f, x, eps=1e-4):
         x0 = Variable(x.data - eps)
         x1 = Variable(x.data + eps)

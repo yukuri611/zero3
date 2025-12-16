@@ -1,5 +1,7 @@
 import unittest
+
 from steps.step10 import *
+
 
 class SquareTest(unittest.TestCase):
     def test_forward(self):
