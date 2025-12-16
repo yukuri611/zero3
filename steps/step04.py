@@ -5,6 +5,7 @@ class Variable:
     def __init__(self, data):
         self.data = data
 
+
 class Function:
     def __call__(self, input):
         x = input.data
@@ -18,7 +19,8 @@ class Function:
 
 class Square(Function):
     def forward(self, x):
-        return x ** 2
+        return x**2
+
 
 class Exp(Function):
     def forward(self, x):
@@ -26,14 +28,14 @@ class Exp(Function):
 
 
 def numerical_diff(f, x, eps=1e-4):
-        x0 = Variable(x.data - eps)
-        x1 = Variable(x.data + eps)
-        y0 = f(x0)
-        y1 = f(x1)
-        return (y1.data - y0.data) / (2 * eps)
+    x0 = Variable(x.data - eps)
+    x1 = Variable(x.data + eps)
+    y0 = f(x0)
+    y1 = f(x1)
+    return (y1.data - y0.data) / (2 * eps)
+
 
 x = Variable(np.array(2.0))
 f = Square()
 dy = numerical_diff(f, x)
 print(dy)
-

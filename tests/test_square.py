@@ -1,6 +1,14 @@
+if "__file__" in globals():
+    import os
+    import sys
+
+    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import unittest
 
-from steps.step10 import *
+import numpy as np
+
+from dezero import Variable
+from dezero.function import numerical_diff, square
 
 
 class SquareTest(unittest.TestCase):
@@ -9,12 +17,14 @@ class SquareTest(unittest.TestCase):
         y = square(x)
         expected = np.array(4.0)
         self.assertEqual(y.data, expected)
+
     def test_backward(self):
         x = Variable(np.array(3.0))
         y = square(x)
         y.backward()
         expected = np.array(6.0)
         self.assertEqual(x.grad, expected)
+
     def test_gradient_check(self):
         x = Variable(np.random.rand(1))
         y = square(x)

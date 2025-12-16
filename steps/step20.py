@@ -26,6 +26,7 @@ class Variable:
 
         funcs = []
         seen_set = set()
+
         def add_func(f):
             if f not in seen_set:
                 seen_set.add(f)
@@ -41,7 +42,7 @@ class Variable:
 
             for x, gx in zip(f.inputs, gxs):
                 if x.grad is None:
-                    x.grad= gx
+                    x.grad = gx
                 else:
                     x.grad = x.grad + gx
                 if x.creator is not None:
@@ -71,22 +72,27 @@ class Variable:
     def __repr__(self):
         if self.data is None:
             return "variable(None)"
-        p = str(self.data).replace('\n', '\n' + ' ' * 9)
-        return 'variable(' + p + ')'
+        p = str(self.data).replace("\n", "\n" + " " * 9)
+        return "variable(" + p + ")"
+
 
 def add(x, y):
     f = Add()
     return f(x, y)
 
+
 def mul(x0, x1):
     return Mul()(x0, x1)
+
 
 Variable.__mul__ = mul
 Variable.__add__ = add
 
+
 class Function:
     def __lt__(self, other):
         return self.generation < other.generation
+
     def __call__(self, *inputs):
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
@@ -108,8 +114,10 @@ class Function:
     def backward(self, gys):
         raise NotImplementedError()
 
+
 class Config:
     enable_backprop = True
+
 
 @contextlib.contextmanager
 def using_config(name, value):
@@ -120,17 +128,19 @@ def using_config(name, value):
     finally:
         setattr(Config, name, old_value)
 
+
 def no_grad():
-    return using_config('enable_backprop', False)
+    return using_config("enable_backprop", False)
 
 
-
-class Add(Function) :
+class Add(Function):
     def forward(self, x0, x1):
         y = x0 + x1
         return y
+
     def backward(self, gy):
         return (gy, gy)
+
 
 class Mul(Function):
     def forward(self, x0, x1):
@@ -144,8 +154,9 @@ class Mul(Function):
 
 class Square(Function):
     def forward(self, x):
-        y = x ** 2
-        return  y
+        y = x**2
+        return y
+
     def backward(self, gy):
         x = self.inputs[0].data
         gx = 2 * x * gy
@@ -155,6 +166,7 @@ class Square(Function):
 class Exp(Function):
     def forward(self, x):
         return np.exp(x)
+
     def backward(self, gy):
         x = self.input.data
         gx = np.exp(x) * gy
@@ -162,24 +174,24 @@ class Exp(Function):
 
 
 def numerical_diff(f, x, eps=1e-4):
-        x0 = Variable(x.data - eps)
-        x1 = Variable(x.data + eps)
-        y0 = f(x0)
-        y1 = f(x1)
-        return (y1.data - y0.data) / (2 * eps)
+    x0 = Variable(x.data - eps)
+    x1 = Variable(x.data + eps)
+    y0 = f(x0)
+    y1 = f(x1)
+    return (y1.data - y0.data) / (2 * eps)
+
 
 def square(x):
     f = Square()
     return f(x)
+
 
 def exp(x):
     f = Exp()
     return f(x)
 
 
-
 def as_array(x):
     if np.isscalar(x):
         return np.array(x)
     return x
-
