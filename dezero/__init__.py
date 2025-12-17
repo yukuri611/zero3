@@ -21,6 +21,8 @@ else:
         using_config,
     )
 
+import dezero.functions  # NOQA
+
 setup_variable()
 
 
