@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 
 from dezero import Variable
-from dezero.function import numerical_diff, square
+from dezero.functions import numerical_diff, square
 
 
 class SquareTest(unittest.TestCase):

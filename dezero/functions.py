@@ -5,7 +5,7 @@ if "__file__" in globals():
     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import numpy as np
 
-from dezero.core_simple import Function, Variable
+from dezero import Function, Variable
 
 
 class Square(Function):
@@ -27,6 +27,51 @@ class Exp(Function):
         x = self.input.data
         gx = np.exp(x) * gy
         return gx
+
+
+class Sin(Function):
+    def forward(self, x):
+        y = np.sin(x)
+        return y
+
+    def backward(self, gy):
+        (x,) = self.inputs
+        gx = gy * cos(x)
+        return gx
+
+
+class Cos(Function):
+    def forward(self, x):
+        y = np.cos(x)
+        return y
+
+    def backward(self, gy):
+        (x,) = self.inputs
+        gx = gy * -sin(x)
+        return gx
+
+
+class Tanh(Function):
+    def forward(self, x):
+        y = np.tanh(x)
+        return y
+
+    def backward(self, gys):
+        y = self.outputs[0]()
+        gx = (1 - y * y) * gys
+        return gx
+
+
+def sin(x):
+    return Sin()(x)
+
+
+def cos(x):
+    return Cos()(x)
+
+
+def tanh(x):
+    return Tanh()(x)
 
 
 def square(x):
