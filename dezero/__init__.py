@@ -23,6 +23,8 @@ else:
     )
 
 import dezero.functions  # NOQA
+from dezero.layers import Layer  # NOQA
+from dezero.models import Model  # NOQA
 
 setup_variable()
 
