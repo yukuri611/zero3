@@ -13,6 +13,7 @@ if is_simple_core:
 else:
     from dezero.core import (
         Function,
+        Parameter,
         Variable,
         as_array,
         as_variable,
@@ -28,6 +29,7 @@ setup_variable()
 
 __all__ = [
     "Function",
+    "Parameter",
     "Variable",
     "as_array",
     "as_variable",

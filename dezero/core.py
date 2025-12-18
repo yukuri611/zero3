@@ -200,6 +200,10 @@ class Pow(Function):
         return gx
 
 
+class Parameter(Variable):
+    pass
+
+
 @contextlib.contextmanager
 def using_config(name, value):
     old_value = getattr(Config, name)
