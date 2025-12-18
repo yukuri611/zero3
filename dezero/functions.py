@@ -223,7 +223,7 @@ class Softmax(Function):
     def backward(self, gy):
         y = self.outputs[0]()  # weakref
         gx = y * gy
-        sumdx = np.sum(gx, axis=1, keepdims=True)
+        sumdx = gx.sum(axis=1, keepdims=True)
         gx -= y * sumdx
         return gx
 
