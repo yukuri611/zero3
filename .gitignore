@@ -2,3 +2,5 @@ zero3_env/
 */__pycache__/
 *.png
 .dezero/
+*.npy
+*.npz
