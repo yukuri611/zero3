@@ -27,6 +27,7 @@ from dezero.layers import Layer  # NOQA
 from dezero.models import Model  # NOQA
 import dezero.datasets  # NOQA
 from dezero.dataloaders import DataLoader  # NOQA
+import dezero.optimizers  # NOQA
 
 setup_variable()
 
