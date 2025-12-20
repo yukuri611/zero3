@@ -2,6 +2,7 @@ is_simple_core = False
 
 if is_simple_core:
     from dezero.core_simple import (
+        Config,
         Function,
         Variable,
         as_array,
@@ -12,6 +13,7 @@ if is_simple_core:
     )
 else:
     from dezero.core import (
+        Config,
         Function,
         Parameter,
         Variable,
@@ -19,6 +21,7 @@ else:
         as_variable,
         no_grad,
         setup_variable,
+        test_mode,
         using_config,
     )
 
@@ -28,6 +31,7 @@ from dezero.models import Model  # NOQA
 import dezero.datasets  # NOQA
 from dezero.dataloaders import DataLoader  # NOQA
 import dezero.optimizers  # NOQA
+
 
 setup_variable()
 
@@ -40,4 +44,6 @@ __all__ = [
     "as_variable",
     "no_grad",
     "using_config",
+    "Config",
+    "test_mode",
 ]

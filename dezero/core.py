@@ -20,6 +20,21 @@ except ImportError:
 
 class Config:
     enable_backprop = True
+    train = True
+
+
+@contextlib.contextmanager
+def using_config(name, value):
+    old_value = getattr(Config, name)
+    setattr(Config, name, value)
+    try:
+        yield
+    finally:
+        setattr(Config, name, old_value)
+
+
+def test_mode():
+    return using_config("train", False)
 
 
 class Variable:
@@ -218,16 +233,6 @@ class Pow(Function):
 
 class Parameter(Variable):
     pass
-
-
-@contextlib.contextmanager
-def using_config(name, value):
-    old_value = getattr(Config, name)
-    setattr(Config, name, value)
-    try:
-        yield
-    finally:
-        setattr(Config, name, old_value)
 
 
 def no_grad():
