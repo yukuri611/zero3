@@ -4,6 +4,8 @@ if "__file__" in globals():
 
     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
+import numpy as np
+
 import dezero.utils as utils
 from dezero import Config, Function, Variable, cuda
 from dezero.core import as_array, as_variable
@@ -82,14 +84,24 @@ class Reshape(Function):
 
 
 class Transpose(Function):
+    def __init__(self, axes=None):
+        self.axes = axes
+
     def forward(self, x):
-        xp = cuda.get_array_module(x)
-        y = xp.transpose(x)
+        y = x.transpose(self.axes)
         return y
 
     def backward(self, gy):
-        gx = transpose(gy)
-        return gx
+        if self.axes is None:
+            return transpose(gy)
+
+        axes_len = len(self.axes)
+        inv_axes = tuple(np.argsort([ax % axes_len for ax in self.axes]))
+        return transpose(gy, inv_axes)
+
+
+def transpose(x, axes=None):
+    return Transpose(axes)(x)
 
 
 class Sum(Function):
@@ -281,10 +293,6 @@ def reshape(x, shape):
     return Reshape(shape)(x)
 
 
-def transpose(x):
-    return Transpose()(x)
-
-
 def sum(x, axis=None, keepdims=False):
     return Sum(axis, keepdims)(x)
 
@@ -427,3 +435,16 @@ def dropout(x, dropout_ratio=0.5):
         return y
     else:
         return x
+
+
+# =============================================================================
+# conv2d / col2im / im2col / basic_math
+# =============================================================================
+# from dezero.functions_conv import conv2d  # noqa
+# from dezero.functions_conv import deconv2d  # noqa
+from dezero.functions_conv import conv2d_simple  # noqa
+# from dezero.functions_conv import im2col  # noqa
+# from dezero.functions_conv import col2im  # noqa
+# from dezero.functions_conv import pooling_simple  # noqa
+# from dezero.functions_conv import pooling  # noqa
+# from dezero.functions_conv import average_pooling  # noqa
