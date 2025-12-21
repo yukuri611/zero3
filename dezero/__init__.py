@@ -29,7 +29,7 @@ import dezero.functions  # NOQA
 from dezero.layers import Layer  # NOQA
 from dezero.models import Model  # NOQA
 import dezero.datasets  # NOQA
-from dezero.dataloaders import DataLoader  # NOQA
+from dezero.dataloaders import DataLoader, SeqDataLoader  # NOQA
 import dezero.optimizers  # NOQA
 
 
