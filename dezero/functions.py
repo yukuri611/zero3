@@ -377,6 +377,41 @@ def numerical_diff(f, x, eps=1e-4):
     return (y1.data - y0.data) / (2 * eps)
 
 
+class Max(Function):
+    def __init__(self, axis=None, keepdims=False):
+        self.axis = axis
+        self.keepdims = keepdims
+
+    def forward(self, x):
+        y = x.max(axis=self.axis, keepdims=self.keepdims)
+        return y
+
+    def backward(self, gy):
+        x = self.inputs[0]
+        y = self.outputs[0]()  # weakref
+
+        shape = utils.max_backward_shape(x, self.axis)
+        gy = reshape(gy, shape)
+        y = reshape(y, shape)
+        cond = x.data == y.data
+        gy = broadcast_to(gy, cond.shape)
+        return gy * cond
+
+
+class Min(Max):
+    def forward(self, x):
+        y = x.min(axis=self.axis, keepdims=self.keepdims)
+        return y
+
+
+def max(x, axis=None, keepdims=False):
+    return Max(axis, keepdims)(x)
+
+
+def min(x, axis=None, keepdims=False):
+    return Min(axis, keepdims)(x)
+
+
 class Clip(Function):
     def __init__(self, x_min, x_max):
         self.x_min = x_min
@@ -440,11 +475,7 @@ def dropout(x, dropout_ratio=0.5):
 # =============================================================================
 # conv2d / col2im / im2col / basic_math
 # =============================================================================
-# from dezero.functions_conv import conv2d  # noqa
-# from dezero.functions_conv import deconv2d  # noqa
+
 from dezero.functions_conv import conv2d_simple  # noqa
-# from dezero.functions_conv import im2col  # noqa
-# from dezero.functions_conv import col2im  # noqa
-# from dezero.functions_conv import pooling_simple  # noqa
-# from dezero.functions_conv import pooling  # noqa
-# from dezero.functions_conv import average_pooling  # noqa
+from dezero.functions_conv import im2col  # noqa
+from dezero.functions_conv import pooling_simple  # noqa
